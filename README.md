@@ -252,9 +252,11 @@ Once the backend is running, visit:
 - [x] **Phase 2A: Medical Knowledge Base Integration** (In Progress)
   - [x] Project structure setup for knowledge base
   - [x] Medical ontology framework initialization
+  - [x] Symptom-disease relationship mapping schema
+  - [x] Database population script for initial data
+  - [x] Knowledge API endpoints for symptoms and diseases
   - [ ] UMLS/SNOMED CT integration
-  - [ ] Symptom-disease relationship mapping
-  - [ ] Medical database API integration
+  - [ ] Advanced medical database API integration
 - [ ] Integration with advanced medical AI models
 - [ ] Improved symptom analysis algorithms
 - [ ] Multi-language support
