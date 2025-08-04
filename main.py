@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from config import settings
 from database import engine
 from models import Base
-from routers import auth, medical
+from routers import auth, medical, knowledge
 from schemas import HealthStatus
 import time
 
@@ -34,6 +34,7 @@ if settings.CORS_ORIGINS:
 # Include routers
 app.include_router(auth.router, prefix="/auth", tags=["authentication"])
 app.include_router(medical.router, prefix="/medical", tags=["medical"])
+app.include_router(knowledge.router, prefix="/knowledge", tags=["knowledge-base"])
 
 @app.get("/")
 def read_root():

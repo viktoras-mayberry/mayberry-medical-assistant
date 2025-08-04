@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAYBERRY Medical AI - Test Interface</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+        }
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .symptom-checker {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .status {
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .disease-result {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 MAYBERRY Medical AI</h1>
+        <p style="text-align: center; color: #666; font-size: 1.2em;">
+            Comprehensive Medical Knowledge Base & AI Analysis System
+        </p>
+
+        <div id="serverStatus" class="status">
+            Checking server status...
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🧠 Knowledge Base</h3>
+                <p>Comprehensive medical database with symptoms, diseases, medications, and treatments comparable to leading platforms.</p>
+                <ul>
+                    <li>32+ Detailed Symptoms</li>
+                    <li>17+ Diseases with ICD-10 codes</li>
+                    <li>10+ Medications with interactions</li>
+                    <li>Laboratory markers & guidelines</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h3>🩺 AI Analysis</h3>
+                <p>Intelligent symptom analysis and disease prediction using advanced algorithms.</p>
+                <ul>
+                    <li>Multi-symptom analysis</li>
+                    <li>Risk level assessment</li>
+                    <li>Demographic factors</li>
+                    <li>Emergency detection</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h3>🔬 Lab Integration</h3>
+                <p>Laboratory test interpretation and clinical decision support.</p>
+                <ul>
+                    <li>Normal range interpretation</li>
+                    <li>Critical value alerts</li>
+                    <li>Age/gender adjustments</li>
+                    <li>Clinical significance</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="symptom-checker">
+            <h2>🩺 Try the Symptom Checker</h2>
+            <form id="symptomForm">
+                <div class="form-group">
+                    <label for="symptoms">Symptoms (comma-separated):</label>
+                    <input type="text" id="symptoms" placeholder="e.g., fever, cough, fatigue" value="fever, cough, fatigue">
+                </div>
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" placeholder="Age" value="35" min="1" max="120">
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender:</label>
+                    <select id="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button type="submit">Analyze Symptoms</button>
+            </form>
+            <div id="analysisResults"></div>
+        </div>
+
+        <div class="feature-card">
+            <h3>🌐 API Endpoints</h3>
+            <p>RESTful API endpoints for integration:</p>
+            <ul>
+                <li><code>GET /health</code> - System health check</li>
+                <li><code>GET /knowledge/symptoms</code> - Search symptoms</li>
+                <li><code>GET /knowledge/diseases</code> - Search diseases</li>
+                <li><code>POST /knowledge/analyze-symptoms</code> - Symptom analysis</li>
+                <li><code>GET /knowledge/treatments/{disease}</code> - Get treatments</li>
+                <li><code>POST /knowledge/lab-interpretation</code> - Lab analysis</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        // Check server status on load
+        async function checkServerStatus() {
+            const statusDiv = document.getElementById('serverStatus');
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `✅ Server Online - Version ${data.version} - Uptime: ${data.uptime}`;
+                } else {
+                    throw new Error('Server responded with error');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '❌ Server Offline - Please start the backend server first';
+            }
+        }
+
+        // Handle symptom analysis form
+        document.getElementById('symptomForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const symptoms = document.getElementById('symptoms').value.split(',').map(s => s.trim());
+            const age = parseInt(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const resultsDiv = document.getElementById('analysisResults');
+
+            resultsDiv.innerHTML = '<p>🔄 Analyzing symptoms...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/knowledge/analyze-symptoms`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ symptoms, age, gender })
+                });
+
+                if (response.ok) {
+                    const analysis = await response.json();
+                    displayAnalysisResults(analysis, resultsDiv);
+                } else {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="status error">❌ Error: ${error.message}</p>`;
+            }
+        });
+
+        function displayAnalysisResults(analysis, container) {
+            let html = '<div class="results">';
+            html += `<h3>🎯 Analysis Results</h3>`;
+            html += `<p><strong>Risk Level:</strong> <span style="color: ${getRiskColor(analysis.risk_level)}">${analysis.risk_level.toUpperCase()}</span></p>`;
+            
+            if (analysis.has_emergency_symptoms) {
+                html += '<p style="color: red; font-weight: bold;">⚠️ EMERGENCY SYMPTOMS DETECTED</p>';
+            }
+
+            html += `<h4>📋 Recommendations:</h4><ul>`;
+            analysis.recommendations.forEach(rec => {
+                html += `<li>${rec}</li>`;
+            });
+            html += `</ul>`;
+
+            if (analysis.possible_diseases && analysis.possible_diseases.length > 0) {
+                html += `<h4>🦠 Possible Conditions:</h4>`;
+                analysis.possible_diseases.slice(0, 3).forEach(disease => {
+                    html += `<div class="disease-result">`;
+                    html += `<strong>${disease.name}</strong> (${disease.icd_10_code})<br>`;
+                    html += `<small>Match Score: ${(disease.match_score * 100).toFixed(1)}% | Severity: ${disease.severity_level}</small><br>`;
+                    html += `<em>${disease.description}</em>`;
+                    html += `</div>`;
+                });
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function getRiskColor(level) {
+            switch(level) {
+                case 'critical': return '#e74c3c';
+                case 'high': return '#e67e22';
+                case 'medium': return '#f39c12';
+                case 'low': return '#27ae60';
+                default: return '#3498db';
+            }
+        }
+
+        // Initialize
+        checkServerStatus();
+    </script>
+</body>
+</html>

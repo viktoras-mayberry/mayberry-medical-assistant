@@ -13,6 +13,12 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     full_name = Column(String, nullable=True)
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
+    phone_number = Column(String, nullable=True)
+    date_of_birth = Column(DateTime, nullable=True)
+    gender = Column(String, nullable=True)  # 'male', 'female', 'other', 'prefer_not_to_say'
+    profile_picture = Column(String, nullable=True)  # URL or file path
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -22,6 +28,7 @@ class User(Base):
     conversations = relationship("Conversation", back_populates="user")
     health_records = relationship("HealthRecord", back_populates="user")
     second_opinions = relationship("SecondOpinion", back_populates="user")
+    profile = relationship("UserProfile", back_populates="user", uselist=False)
 
 class Conversation(Base):
     __tablename__ = "conversations"
@@ -75,6 +82,41 @@ class SecondOpinion(Base):
     
     # Relationships
     user = relationship("User", back_populates="second_opinions")
+
+class UserProfile(Base):
+    __tablename__ = "user_profiles"
+    
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, unique=True)
+    
+    # Medical Information
+    height = Column(Float, nullable=True)  # in cm
+    weight = Column(Float, nullable=True)  # in kg
+    blood_type = Column(String, nullable=True)  # 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
+    allergies = Column(Text, nullable=True)  # JSON string
+    chronic_conditions = Column(Text, nullable=True)  # JSON string
+    current_medications = Column(Text, nullable=True)  # JSON string
+    family_medical_history = Column(Text, nullable=True)  # JSON string
+    emergency_contact_name = Column(String, nullable=True)
+    emergency_contact_phone = Column(String, nullable=True)
+    emergency_contact_relationship = Column(String, nullable=True)
+    
+    # Preferences
+    preferred_language = Column(String, default='en')
+    timezone = Column(String, nullable=True)
+    notification_preferences = Column(Text, nullable=True)  # JSON string
+    privacy_settings = Column(Text, nullable=True)  # JSON string
+    
+    # AI Interaction Preferences
+    ai_interaction_style = Column(String, default='balanced')  # 'concise', 'detailed', 'balanced'
+    risk_tolerance = Column(String, default='moderate')  # 'conservative', 'moderate', 'liberal'
+    preferred_units = Column(String, default='metric')  # 'metric', 'imperial'
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = relationship("User", back_populates="profile")
 
 class SystemLog(Base):
     __tablename__ = "system_logs"

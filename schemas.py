@@ -31,6 +31,53 @@ class PasswordUpdate(BaseModel):
     current_password: str
     new_password: str
 
+# User Profile schemas
+class UserProfileBase(BaseModel):
+    height: Optional[float] = None
+    weight: Optional[float] = None
+    blood_type: Optional[str] = None
+    allergies: Optional[List[str]] = None
+    chronic_conditions: Optional[List[str]] = None
+    current_medications: Optional[List[str]] = None
+    family_medical_history: Optional[str] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+    emergency_contact_relationship: Optional[str] = None
+    preferred_language: str = 'en'
+    timezone: Optional[str] = None
+    ai_interaction_style: str = 'balanced'
+    risk_tolerance: str = 'moderate'
+    preferred_units: str = 'metric'
+
+class UserProfileCreate(UserProfileBase):
+    pass
+
+class UserProfileUpdate(BaseModel):
+    height: Optional[float] = None
+    weight: Optional[float] = None
+    blood_type: Optional[str] = None
+    allergies: Optional[List[str]] = None
+    chronic_conditions: Optional[List[str]] = None
+    current_medications: Optional[List[str]] = None
+    family_medical_history: Optional[str] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+    emergency_contact_relationship: Optional[str] = None
+    preferred_language: Optional[str] = None
+    timezone: Optional[str] = None
+    ai_interaction_style: Optional[str] = None
+    risk_tolerance: Optional[str] = None
+    preferred_units: Optional[str] = None
+
+class UserProfileResponse(UserProfileBase):
+    id: str
+    user_id: str
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
 # Token schemas
 class Token(BaseModel):
     access_token: str

@@ -20,16 +20,25 @@ router = APIRouter()
 
 @router.post("/chat", response_model=ChatResponse)
 def chat_with_ai(message: ChatMessage, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    response = local_medical_ai.generate_response(message.content)
+    # Get enhanced response from AI
+    ai_response = local_medical_ai.generate_response(message.content)
+    
+    # Determine sources based on knowledge base usage
+    sources = []
+    if ai_response.get('knowledge_base_used'):
+        sources = ["MAYBERRY Medical Knowledge Base", "WHO Guidelines", "Medical Literature"]
+    else:
+        sources = ["General Medical Knowledge", "Health Guidelines"]
+    
     return {
-        "id": "chat_123",
-        "content": response,
-        "risk_level": "low",
-        "confidence_score": 0.9,
-        "recommendations": ["Consult a doctor for a full diagnosis."],
-        "sources": ["WebMD", "Mayo Clinic"],
-        "is_emergency": False,
-        "created_at": "2025-07-30T16:11:37.382Z"
+        "id": f"chat_{hash(message.content) % 10000}",
+        "content": ai_response.get('response', 'I apologize, but I could not process your request at this time.'),
+        "risk_level": ai_response.get('risk_level', 'low'),
+        "confidence_score": ai_response.get('confidence_score', 0.7),
+        "recommendations": ai_response.get('recommendations', ["Consult a healthcare professional for personalized advice."]),
+        "sources": sources,
+        "is_emergency": ai_response.get('risk_level') == 'high',
+        "created_at": "2025-08-04T13:05:00.000Z"
     }
 
 @router.post("/symptom-checker", response_model=SymptomAnalysis)
