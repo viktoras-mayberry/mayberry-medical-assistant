@@ -17,6 +17,28 @@ class Settings(BaseSettings):
 
     # CORS settings
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    
+    # Privacy & Security Settings
+    HIPAA_COMPLIANT: bool = True
+    GDPR_COMPLIANT: bool = True
+    LOCAL_PROCESSING_ENABLED: bool = True
+    DATA_ENCRYPTION_ENABLED: bool = True
+    ZERO_KNOWLEDGE_ARCHITECTURE: bool = True
+    ANONYMOUS_MODE_ENABLED: bool = True
+    
+    # AI Model Settings
+    USE_ADVANCED_AI_MODELS: bool = True
+    BIOBERT_MODEL_ENABLED: bool = True
+    CLINICALBERT_MODEL_ENABLED: bool = True
+    PREDICTIVE_ANALYTICS_ENABLED: bool = True
+    
+    # Feature Flags
+    MEDICAL_MEMORY_ENABLED: bool = True
+    SYMPTOM_DETECTIVE_ENABLED: bool = True
+    HEALTH_TIMELINE_ENABLED: bool = True
+    EMERGENCY_AI_ENABLED: bool = True
+    PRIVACY_DASHBOARD_ENABLED: bool = True
+    INTERACTIVE_BODY_MAP_ENABLED: bool = True
 
     class Config:
         env_file = ".env"

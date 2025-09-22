@@ -99,7 +99,13 @@ class ChatResponse(BaseModel):
     recommendations: Optional[List[str]] = None
     sources: Optional[List[str]] = None
     is_emergency: bool = False
-    created_at: datetime
+    emergency_info: Optional[Dict[str, Any]] = None
+    emergency_response: Optional[Dict[str, Any]] = None
+    privacy_status: Optional[Dict[str, Any]] = None
+    medical_memory_used: bool = False
+    ai_personality: str = 'balanced'
+    model_version: str = 'MAYBERRY-Medical-AI-v1.0'
+    created_at: str
 
 class ConversationHistory(BaseModel):
     id: str

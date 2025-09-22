@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from auth import get_current_active_user
 from database import get_db
 from models import User
+from datetime import datetime
+import json
 from schemas import (
     ChatMessage, 
     ChatResponse, 
@@ -20,26 +22,71 @@ router = APIRouter()
 
 @router.post("/chat", response_model=ChatResponse)
 def chat_with_ai(message: ChatMessage, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    # Get enhanced response from AI
-    ai_response = local_medical_ai.generate_response(message.content)
+    # Get enhanced response from AI with user context
+    ai_response = local_medical_ai.generate_response(
+        message.content, 
+        context={"session_id": message.session_id},
+        user_id=current_user.id
+    )
     
     # Determine sources based on knowledge base usage
     sources = []
     if ai_response.get('knowledge_base_used'):
-        sources = ["MAYBERRY Medical Knowledge Base", "WHO Guidelines", "Medical Literature"]
+        sources = ["MAYBERRY Medical Knowledge Base", "WHO Guidelines", "Medical Literature", "Clinical Research"]
     else:
         sources = ["General Medical Knowledge", "Health Guidelines"]
     
-    return {
+    # Add privacy and security information
+    privacy_status = ai_response.get('privacy_status', {})
+    
+    response_data = {
         "id": f"chat_{hash(message.content) % 10000}",
         "content": ai_response.get('response', 'I apologize, but I could not process your request at this time.'),
         "risk_level": ai_response.get('risk_level', 'low'),
         "confidence_score": ai_response.get('confidence_score', 0.7),
         "recommendations": ai_response.get('recommendations', ["Consult a healthcare professional for personalized advice."]),
         "sources": sources,
-        "is_emergency": ai_response.get('risk_level') == 'high',
-        "created_at": "2025-08-04T13:05:00.000Z"
+        "is_emergency": ai_response.get('emergency_info', {}).get('immediate_action_required', False),
+        "emergency_info": ai_response.get('emergency_info', {}),
+        "emergency_response": ai_response.get('emergency_response', {}),
+        "privacy_status": privacy_status,
+        "medical_memory_used": ai_response.get('medical_memory_used', False),
+        "ai_personality": ai_response.get('ai_personality', 'balanced'),
+        "model_version": ai_response.get('model_version', 'MAYBERRY-Medical-AI-v1.0'),
+        "created_at": ai_response.get('timestamp', "2025-01-04T13:05:00.000Z")
     }
+    
+    # Store conversation in database
+    from models import Conversation
+    conversation = Conversation(
+        user_id=current_user.id,
+        session_id=message.session_id or f"session_{current_user.id}_{int(datetime.utcnow().timestamp())}",
+        message_type="user",
+        content=message.content,
+        risk_level=ai_response.get('risk_level'),
+        confidence_score=ai_response.get('confidence_score'),
+        extra_data=json.dumps(ai_response.get('extracted_entities', {}))
+    )
+    db.add(conversation)
+    
+    # Store AI response
+    ai_conversation = Conversation(
+        user_id=current_user.id,
+        session_id=conversation.session_id,
+        message_type="assistant",
+        content=ai_response.get('response'),
+        risk_level=ai_response.get('risk_level'),
+        confidence_score=ai_response.get('confidence_score'),
+        extra_data=json.dumps({
+            "emergency_info": ai_response.get('emergency_info'),
+            "recommendations": ai_response.get('recommendations'),
+            "sources": sources
+        })
+    )
+    db.add(ai_conversation)
+    db.commit()
+    
+    return response_data
 
 @router.post("/symptom-checker", response_model=SymptomAnalysis)
 def analyze_symptoms(symptom_input: SymptomInput, db: Session = Depends(get_db)):

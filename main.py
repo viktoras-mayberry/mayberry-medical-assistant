@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from config import settings
 from database import engine
 from models import Base
-from routers import auth, medical, knowledge
+from routers import auth, medical, knowledge, privacy
 from schemas import HealthStatus
 import time
 
@@ -35,6 +35,7 @@ if settings.CORS_ORIGINS:
 app.include_router(auth.router, prefix="/auth", tags=["authentication"])
 app.include_router(medical.router, prefix="/medical", tags=["medical"])
 app.include_router(knowledge.router, prefix="/knowledge", tags=["knowledge-base"])
+app.include_router(privacy.router, prefix="/privacy", tags=["privacy-security"])
 
 @app.get("/")
 def read_root():
@@ -56,14 +57,23 @@ def health_check():
     
     return {
         "status": "healthy",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "features": {
             "authentication": True,
             "medical_chat": True,
             "symptom_checker": True,
             "second_opinion": True,
             "lab_analysis": True,
-            "local_ai": True
+            "local_ai": True,
+            "privacy_dashboard": settings.PRIVACY_DASHBOARD_ENABLED,
+            "medical_memory": settings.MEDICAL_MEMORY_ENABLED,
+            "emergency_ai": settings.EMERGENCY_AI_ENABLED,
+            "interactive_body_map": settings.INTERACTIVE_BODY_MAP_ENABLED,
+            "advanced_ai_models": settings.USE_ADVANCED_AI_MODELS,
+            "hipaa_compliant": settings.HIPAA_COMPLIANT,
+            "gdpr_compliant": settings.GDPR_COMPLIANT,
+            "local_processing": settings.LOCAL_PROCESSING_ENABLED,
+            "zero_knowledge_architecture": settings.ZERO_KNOWLEDGE_ARCHITECTURE
         },
         "uptime": uptime_str
     }

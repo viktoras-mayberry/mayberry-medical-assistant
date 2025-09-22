@@ -16,6 +16,7 @@ import DashboardPage from './pages/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import PrivacyDashboard from './components/PrivacyDashboard';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/lab-analysis" element={<LabAnalysisPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/privacy" element={<PrivacyDashboard />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
               </Routes>

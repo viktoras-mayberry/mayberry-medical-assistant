@@ -32,6 +32,7 @@ import {
   Login,
   PersonAdd,
   Logout,
+  Security,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -45,6 +46,7 @@ const navigationItems = [
   { text: 'Second Opinion', icon: <VisibilityOff />, path: '/second-opinion' },
   { text: 'Lab Analysis', icon: <Science />, path: '/lab-analysis' },
   { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
+  { text: 'Privacy & Security', icon: <Security />, path: '/privacy' },
 ];
 
 const Layout = ({ children }) => {

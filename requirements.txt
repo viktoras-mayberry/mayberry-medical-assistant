@@ -45,3 +45,6 @@ flake8==7.0.0
 
 # Logging & Monitoring
 structlog==24.1.0
+
+# Privacy & Security
+cryptography==41.0.8
