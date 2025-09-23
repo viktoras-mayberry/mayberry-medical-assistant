@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import JWTError, jwt
+import jwt
+from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from config import settings
@@ -46,7 +47,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) 
         if email is None:
             raise credentials_exception
         token_data = TokenData(email=email)
-    except JWTError:
+    except InvalidTokenError:
         raise credentials_exception
     
     return token_data

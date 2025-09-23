@@ -1,7 +1,7 @@
 import sys
 import os
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from datetime import datetime
 import json
 
@@ -263,7 +263,7 @@ class LocalMedicalAI:
         risk_level = emergency_info['emergency_level'] if emergency_info['emergency_detected'] else "low"
         if risk_level == "none":
             if any(keyword in prompt.lower() for keyword in ['pain', 'fever', 'bleeding', 'infection']):
-            risk_level = "medium"
+                risk_level = "medium"
         
         # Calculate confidence score
         confidence_score = 0.85 if knowledge_used else 0.65
